@@ -1,10 +1,7 @@
 apply plugin: 'java'
-apply application: 'aplication'
+apply plugin: 'application'
 
-sourceCompatibility = '1.8'
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-
+mainClassName = 'ConectorJava'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 version = '1.0'
