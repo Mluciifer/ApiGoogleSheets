@@ -11,15 +11,19 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
+import com.google.api.services.sheets.v4.model.BatchUpdateValuesRequest;
+import com.google.api.services.sheets.v4.model.BatchUpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import java.awt.Dimension;
+import java.net.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +42,7 @@ public class ConectorJava {
     private static final String  APPLICATION_NAME="Google sheets APIS";
     private static final JacksonFactory JSON_FACTORY= JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH="token";
-    private static final String USER_ENTERED= "USER_ENTERD";
+    private static final String USER_ENTERED= "USER_ENTERED";
     /* instacia global de los alcances requeridos por este proyecto*/
 
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
@@ -73,35 +77,38 @@ public class ConectorJava {
         //construye una nueva API con servicio de cliente
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         final String spreadsheetId = "1VG6JKqUSHLQ5Do7s5eXga3EOb7RZGBctkP6X_9hPiow";
-        final String range ="";
+        final String range ="C9";
         Sheets servicio =new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+//LEER UN SOLO RANGO----------------------------------------------------------------------------------------------------------------------- 
         //Leer e imprimir un solo rango
        /* ValueRange response = servicio.spreadsheets().values()
                 .get(spreadsheetId, range)
                 .execute();
         List<List<Object>> values = response.getValues(); */
-       
+      
               /*  if(values == null || values.isEmpty()){
             System.out.println("no se encontraron datos");
         }else{
             System.out.println("DATOS");
+            //recorre cada valor dentro de su rango 
             for(List row : values){
                 //imprime las columnas elegidas desde el puesto 0
                 System.out.printf("%s, %s, %s, %s\n",row.get(0),row.get(1),row.get(2),row.get(3));
             }
         }*/    
- //---------------------------------------------------------------------------------------------------------------------------             
-              //leer e imprime multiples rangos
-        List <String> ranges=Arrays.asList("A9:B13","F9:F20");
+ //LEER MULTIPLES DATOS-----------------------------------------------------------------------------------------------------------------------             
+              //lee e imprime multiples rangos
+           /* List <String> ranges=Arrays.asList("A9:B13","F9:F20");
             BatchGetValuesResponse result = servicio.spreadsheets().values().batchGet(spreadsheetId).setMajorDimension("COLUMNS")
                 .setRanges(ranges) 
                 .execute();
        List<ValueRange> val = result.getValueRanges();
     
-        System.out.printf("rangos recividos: %s\n",val);
- //---------------------------------------------------------------------------------------------------------------------------       
+        System.out.printf("rangos recividos: %s, %s\n",val.get(0),val.get(1)); */
+        
+ //ESCRIBIR--------------------------------------------------------------------------------------------------------------------------       
             //escribe datos y valores en la tabla GoogleSheets
           /*List<List<Object>> Valor = Arrays.asList(Arrays.asList("carlitos","","wey"));
         ValueRange body = new ValueRange().setValues(Valor);
@@ -110,7 +117,26 @@ public class ConectorJava {
                 .execute();
         
             System.out.println("%d cells update."+ result.getUpdatedCells()); */   
-          
+//----------------------------------------------------------------------------------------------------------------------------------
+
+            List<List<Object>> valorM= Arrays.asList(Arrays.asList("","","","",""));
+            List<ValueRange> data =new ArrayList<>();
+            data.add(new ValueRange().setMajorDimension("ROWS")
+                    .setRange(range)
+                    .setValues(valorM));
+            
+            BatchUpdateValuesRequest body= new BatchUpdateValuesRequest()
+                    .setValueInputOption(USER_ENTERED)
+                    .setData(data);
+            BatchUpdateValuesResponse resl =servicio.spreadsheets()
+                    .values()
+                    .batchUpdate(spreadsheetId, body)
+                    .execute();
+            System.out.printf(" celdas actualizadas: %d",resl.getTotalUpdatedCells());
+            
+                    
+                    
+            
             
          
        
