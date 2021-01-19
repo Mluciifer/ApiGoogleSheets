@@ -10,6 +10,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.BatchGetValuesResponse;
 import com.google.api.services.sheets.v4.model.BatchUpdateValuesRequest;
 import com.google.api.services.sheets.v4.model.BatchUpdateValuesResponse;
@@ -76,8 +77,8 @@ public class ConectorJava {
   public static void main(String[] args)throws IOException, GeneralSecurityException {
         //construye una nueva API con servicio de cliente
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        final String spreadsheetId = "1VG6JKqUSHLQ5Do7s5eXga3EOb7RZGBctkP6X_9hPiow";
-        final String range ="C9";
+        final String spreadsheetId = "15Lzhev2_xhMx06feltoLLuG4Ykt0_1WrQFAkgDCDmlk";
+        final String range ="A1:I";
         Sheets servicio =new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
@@ -109,17 +110,19 @@ public class ConectorJava {
         System.out.printf("rangos recividos: %s, %s\n",val.get(0),val.get(1)); */
         
  //ESCRIBIR--------------------------------------------------------------------------------------------------------------------------       
+            
             //escribe datos y valores en la tabla GoogleSheets
           /*List<List<Object>> Valor = Arrays.asList(Arrays.asList("carlitos","","wey"));
         ValueRange body = new ValueRange().setValues(Valor);
         UpdateValuesResponse result=servicio.spreadsheets().values().update(spreadsheetId, range, body)
                 .setValueInputOption(USER_ENTERED)
                 .execute();
-        
-            System.out.println("%d cells update."+ result.getUpdatedCells()); */   
-//----------------------------------------------------------------------------------------------------------------------------------
-
-            List<List<Object>> valorM= Arrays.asList(Arrays.asList("","","","",""));
+        System.out.println("%d cells update."+ result.getUpdatedCells()); */   
+          
+//ESCRIBIR DATOS MULTIPLES-----------------------------------------------------------------------------------------------------------------------------
+                
+                //Escribe datos multiples en filas o columnas
+           /* List<List<Object>> valorM= Arrays.asList(Arrays.asList("","","","",""));
             List<ValueRange> data =new ArrayList<>();
             data.add(new ValueRange().setMajorDimension("ROWS")
                     .setRange(range)
@@ -132,9 +135,16 @@ public class ConectorJava {
                     .values()
                     .batchUpdate(spreadsheetId, body)
                     .execute();
-            System.out.printf(" celdas actualizadas: %d",resl.getTotalUpdatedCells());
+            System.out.printf(" celdas actualizadas: %d",resl.getTotalUpdatedCells()); */
             
-                    
+ //ADJUNTAR VALORES-----------------------------------------------------------------------------------------------------------------------------           
+             
+              List <List<Object>> Avalues= Arrays.asList(Arrays.asList("BOLETA"));
+              ValueRange body =new ValueRange().setValues(Avalues);
+              AppendValuesResponse reltd= servicio.spreadsheets().values().append(spreadsheetId, range, body)
+                      .setValueInputOption(USER_ENTERED)
+                      .execute();
+              System.out.printf("%d celdas adjuntadas", reltd.getUpdates().getUpdatedCells());
                     
             
             
