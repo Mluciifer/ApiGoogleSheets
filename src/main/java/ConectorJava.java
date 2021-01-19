@@ -122,7 +122,7 @@ public class ConectorJava {
 //ESCRIBIR DATOS MULTIPLES-----------------------------------------------------------------------------------------------------------------------------
                 
                 //Escribe datos multiples en filas o columnas
-           /* List<List<Object>> valorM= Arrays.asList(Arrays.asList("","","","",""));
+           /* List<List<Object>> valorM= Arrays.asList(Arrays.asList("","","","",""),Arrays.asList("","","","",""));
             List<ValueRange> data =new ArrayList<>();
             data.add(new ValueRange().setMajorDimension("ROWS")
                     .setRange(range)
@@ -138,14 +138,14 @@ public class ConectorJava {
             System.out.printf(" celdas actualizadas: %d",resl.getTotalUpdatedCells()); */
             
  //ADJUNTAR VALORES-----------------------------------------------------------------------------------------------------------------------------           
-             
+                // adjunta valores al final de los datos escritos en cada columnda
               List <List<Object>> Avalues= Arrays.asList(Arrays.asList("BOLETA"));
               ValueRange body =new ValueRange().setValues(Avalues);
               AppendValuesResponse reltd= servicio.spreadsheets().values().append(spreadsheetId, range, body)
                       .setValueInputOption(USER_ENTERED)
                       .execute();
               System.out.printf("%d celdas adjuntadas", reltd.getUpdates().getUpdatedCells());
-                    
+                  
             
             
          
